@@ -47,7 +47,15 @@ main {
   align-items: center;
   align-content: center;
 }
-#hand {
+.playerHand {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black; 
+}
+.dealerHand {
   width: 50%;
   height: 100%;
   display: flex;
@@ -58,6 +66,8 @@ main {
 /***** /Main *****/
 /***** Footer *****/
 footer {
+  margin: 0 auto;
+  width: 700px;
   height: 200px;
   display: flex;
   flex-direction: column;
@@ -67,24 +77,27 @@ footer {
 }
 .buttons {
   height: 75px;
-  width: 300px;
+  width: 500px;
   display: flex;
   align-content: center;
   justify-content: space-around;
 }
 .hitButton {
   transition-duration: 0.4s;
-  font-size: 50px;
 }
 .hitButton:hover {
   cursor: pointer;
 }
 .standButton {
   transition-duration: 0.4s;
-  font-size: 50px;
 }
-.standButton:hover {
+  .standButton:hover {
   cursor: pointer;
+  }
+[type="submit"] {
+  height: 80px;
+  width: 90px;
+  font-size: 30px;
 }
 .statistics {
   height: 100px;
