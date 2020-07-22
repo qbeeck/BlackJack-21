@@ -24,15 +24,21 @@ let dECards;
 let startedGame = false;
 // ***** functions *****
 function newGame() {
-  startedGame = true;
-  gStatus.textContent = "choose an option";
-  createDeck();
-  shuffleDeck();
-  playersCard();
-  checkPoints();
-  editArrCards();
-  pTable(pECards);
-  dTable(dECards);
+  if (!startedGame) {
+    gStatus.textContent = "choose an option";
+    createDeck();
+    shuffleDeck();
+    playersCard();
+    checkPoints();
+    editArrCards();
+    pTable(pECards);
+    dTable(dECards);
+    startedGame = true;
+  } else if (startedGame) {
+    setBackToDefault();
+    startedGame = false;
+    newGame();
+  }
 }
 function createDeck() {
   let suits = ["s", "d", "c", "h"];
@@ -91,7 +97,7 @@ function dTable(arr) {
 }
 function setBackToDefault() {
   let elements = document.getElementsByClassName("card");
-  while (elements.length > 0){
+  while(elements.length > 0){
       elements[0].parentNode.removeChild(elements[0]);
   }
 }
