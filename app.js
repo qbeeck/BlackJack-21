@@ -2,6 +2,7 @@ const pScore = document.querySelector(".playerScore");
 const dScore = document.querySelector(".dealerScore");
 const gStatus = document.querySelector(".gameStatus");
 const pHand = document.querySelector(".playerHand");
+const dHand = document.querySelector(".dealerHand");
 const hitBtn = document.querySelector(".hitButton");
 const standBtn = document.querySelector(".standButton");
 const nGameBtn = document.querySelector(".newGame");
@@ -11,14 +12,28 @@ const dStat = document.querySelector(".drawStat");
 // ***** events *****
 // hitBtn.addEventListener("click", hit);
 // standBtn.addEventListener("click", stand);
-// nGameBtn.addEventListener("click", newGame);
+nGameBtn.addEventListener("click", newGame);
 // ***** values *****
 let deck = new Array();
 let pCards;
 let dCards;
 let pPoints = 0;
 let dPoints = 0;
+let pECards;
+let dECards;
+let startedGame = false;
 // ***** functions *****
+function newGame() {
+  startedGame = true;
+  gStatus.textContent = "choose an option";
+  createDeck();
+  shuffleDeck();
+  playersCard();
+  checkPoints();
+  editArrCards();
+  pTable(pECards);
+  dTable(dECards);
+}
 function createDeck() {
   let suits = ["s", "d", "c", "h"];
   let values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"];
@@ -50,20 +65,33 @@ function checkPoints() {
   lpPoints.forEach(element => pPoints += element);
   ldPoints.forEach(element => dPoints += element);
 }
-function pTable() {
-  let q = document.createElement("div");
-  q.classList.add("card");
-  q.innerHTML = `
-                <img src="./img/${value}.png"></img>
-                `;
-  for (i=0;i<2;i++) {
-    pHand.appendChild(q);
+function editArrCards() {
+pECards = pCards.map(el => { return `${el}.png`});
+dECards = dCards.map(el => { return `${el}.png`});
+}
+function pTable(arr) {
+  arr.map((el, node) => {
+    node = document.createElement("div");
+    node.classList.add("card");
+    node.innerHTML = `
+                    <img src="./img/${el}">
+    `;
+    pHand.appendChild(node);
+  });
+}
+function dTable(arr) {
+  arr.map((el, node) => {
+    node = document.createElement("div");
+    node.classList.add("card");
+    node.innerHTML = `
+                    <img src="./img/${el}">
+    `;
+    dHand.appendChild(node);
+  });
+}
+function setBackToDefault() {
+  let elements = document.getElementsByClassName("card");
+  while (elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
   }
 }
-
-createDeck();
-shuffleDeck();
-playersCard();
-checkPoints();
-console.log(dPoints);
-console.log(pPoints);
