@@ -25,7 +25,7 @@ let startedGame = false;
 // ***** functions *****
 function newGame() {
   if (!startedGame) {
-    gStatus.textContent = "choose an option";
+    gStatus.textContent = "Hit or Stand";
     createDeck();
     shuffleDeck();
     playersCard();
@@ -37,6 +37,8 @@ function newGame() {
   } else if (startedGame) {
     setBackToDefault();
     startedGame = false;
+    pPoints = 0;
+    dPoints = 0;
     newGame();
   }
 }
@@ -70,6 +72,8 @@ function checkPoints() {
   dCards.forEach(el => ldPoints.push(+el.substr(1)));
   lpPoints.forEach(element => pPoints += element);
   ldPoints.forEach(element => dPoints += element);
+  pScore.textContent = pPoints;
+  dScore.textContent = dPoints;
 }
 function editArrCards() {
 pECards = pCards.map(el => { return `${el}.png`});
@@ -101,3 +105,4 @@ function setBackToDefault() {
       elements[0].parentNode.removeChild(elements[0]);
   }
 }
+
