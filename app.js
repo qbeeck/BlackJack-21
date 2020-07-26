@@ -17,24 +17,65 @@ nGameBtn.addEventListener("click", newGame);
 // ***** values *****
 let deck = new Array();
 let startedGame = false;
-let gameStand = false;
+hitBtn.disabled = true;
+standBtn.disabled = true;
+
 
 let playerCards = new Array();
-let playerCardsURL = new Array();
+let playerCardsUrl = new Array();
 let playerScore = 0;
 
 let dealerCards = new Array();
-let dealerCardsURL = new Array();
+let dealerCardsUrl = new Array();
 let dealerScore = 0;
 
 let wins = 0;
-let loss = 0;
-let draw = 0;
+let losses = 0;
+let draws = 0;
 // ***** functions *****
-let deckUtilities = {
+function newGame() {
+  if (!startedGame) {
+    deckFunctions.createDeck();
+    deckFunctions.shuffleDeck();
+    cardsFunctions.cardToPlayer(2);
+    cardsFunctions.cardToDealer(1);
+    cardsFunctions.pCardsUrl();
+    cardsFunctions.dCardsUrl();
+    tableFunctions.pTable();
+    tableFunctions.dInverted();
+    tableFunctions.dTable();
+    scoreFunctions.calcPlayerScore();
+    scoreFunctions.calcDealerScore();
+    startedGame = true;
+    buttonsRefresh()
+  } else if (startedGame) {
+    deleteFunctions.deleteCards();
+    startedGame = false;
+    playerScore = 0;
+    dealerScore = 0;
+    newGame();
+  }
+}
+
+function hit() {
+  playerScore = 0;
+  playerCards = playerCards.concat(deck.splice(0, 1));
+  cardsFunctions.pCardsUrl();
+  deleteFunctions.deletePlayerCards();
+  tableFunctions.pTable();
+  scoreFunctions.calcPlayerScore();
+  playerFunctions.playerRule();
+}
+
+function stand() {
+  deleteFunctions.deleteInvertedCard();
+  dealerFunctions.dealerRule();
+}
+
+let deckFunctions = {
   createDeck() {
     let suits = ["s", "d", "c", "h"];
-    let values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"];
+    let values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
     for (let i = 0; i < suits.length; i++) {
       for (let g = 0; g < values.length;g++) {
         let card = suits[i] + values[g];
@@ -51,27 +92,27 @@ let deckUtilities = {
       deck[location2] = tmp;
       
     }
-  },
+  }
 };
 
-let cards = {
+let cardsFunctions = {
   cardToPlayer(num) {
     playerCards = deck.splice(0, num);
   },
-  pCardsURL() {
-    playerCardsURL = playerCards.map(el => {return `${el}.png`});
+  pCardsUrl() {
+    playerCardsUrl = playerCards.map(el => {return `${el}.png`});
   },
   cardToDealer(num) {
     dealerCards = deck.splice(0, num);
   },
-  dCardsURL() {
-    dealerCardsURL = dealerCards.map(el => {return `${el}.png`});
+  dCardsUrl() {
+    dealerCardsUrl = dealerCards.map(el => {return `${el}.png`});
   }
-};
+}
 
-let table = {
+let tableFunctions = {
   pTable() {
-    playerCardsURL.map((el, node) => {
+    playerCardsUrl.map((el, node) => {
       node = document.createElement("div");
       node.classList.add("card","playerCard");
       node.innerHTML = `
@@ -81,7 +122,7 @@ let table = {
     });
   },
   dTable() {
-    dealerCardsURL.map((el, node) => {
+    dealerCardsUrl.map((el, node) => {
       node = document.createElement("div");
       node.classList.add("card","dealerCard");
       node.innerHTML = `
@@ -92,30 +133,47 @@ let table = {
   },
   dInverted() {
     inverted = document.createElement("div");
-    inverted.classList.add("invCard", "card");
+    inverted.classList.add("card", "invCard");
     inverted.innerHTML = `
                       <img src="./img/hidden.png">
       `;
       dHand.appendChild(inverted);
   }
-};
+}
 
-let scoreStatus = {
-  calculatePlayerScore() {
+let scoreFunctions = {
+  calcPlayerScore() {
     for (let value of playerCards) {
-      playerScore += +value.substr(1);
+      if (value.substr(1) == "A") {
+        playerScore += 11;
+      } else if (value.substr(1) == "J" || value.substr(1) == "Q" || value.substr(1) == "K") {
+        playerScore += 10;
+      } else {
+        playerScore += +value.substr(1);
+      } 
+      pScore.textContent = playerScore;
     }
-  pScore.textContent = playerScore;
   },
-  calculateDealerScore() {
+  calcDealerScore() {
     for (let value of dealerCards) {
-      dealerScore += +value.substr(1);
+      if (value.substr(1) == "A") {
+        dealerScore += 11;
+      } else if (value.substr(1) == "J" || value.substr(1) == "Q" || value.substr(1) == "K") {
+        dealerScore += 10;
+      } else {
+        dealerScore += +value.substr(1);
+      } 
+      dScore.textContent = dealerScore;
     }
-  dScore.textContent = dealerScore;
+  },
+  calcStatistics() {
+    wStatus.textContent = wins;
+    lStatus.textContent = losses;
+    dStatus.textContent = draws;
   }
-};
+}
 
-let deleteItems = {
+let deleteFunctions = {
   deleteCards() {
     let elements = document.getElementsByClassName("card");
     while(elements.length > 0){
@@ -142,57 +200,59 @@ let deleteItems = {
   }
 }
 
-function newGame() {
-  if (!startedGame) {
-    deckUtilities.createDeck();
-    deckUtilities.shuffleDeck();
-    cards.cardToPlayer(2);
-    cards.cardToDealer(1);
-    cards.pCardsURL();
-    cards.dCardsURL();
-    table.pTable();
-    table.dInverted();
-    table.dTable();
-    scoreStatus.calculatePlayerScore();
-    scoreStatus.calculateDealerScore();
-    gStatus.textContent = "Hit or Stand";
-    startedGame = true;
-    hitBtn.disabled = false;
-    standBtn.disabled = false;
-    rule.checkScore();
-  } else if (startedGame) {
-    deleteItems.deleteCards();
-    startedGame = false;
-    playerScore = 0;
-    dealerScore = 0;
-    newGame();
+let playerFunctions = {
+  playerRule() {
+    if (playerScore > 21) {
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      gStatus.textContent = "You lose... New game???"
+      losses += 1;
+      scoreFunctions.calcStatistics();
+    }
   }
 }
 
-function hit() {
-  playerScore = 0;
-  playerCards = playerCards.concat(deck.splice(0, 1));
-  cards.pCardsURL();
-  deleteItems.deletePlayerCards();
-  table.pTable();
-  scoreStatus.calculatePlayerScore();
-  
+let dealerFunctions = {
+  dealerHit() {
+    dealerScore = 0;
+    dealerCards = dealerCards.concat(deck.splice(0, 1));
+    cardsFunctions.dCardsUrl();
+    deleteFunctions.deleteDealerCards();
+    tableFunctions.dTable();
+    scoreFunctions.calcDealerScore();
+  },
+  dealerRule() {
+    while (true) {
+      if (playerScore > dealerScore) {
+        dealerFunctions.dealerHit();
+      } else {
+        break;
+      }
+    }
+    if (dealerScore > playerScore && dealerScore <= 21) {
+      gStatus.textContent = "Dealer Won... New game???"
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      losses += 1;
+      scoreFunctions.calcStatistics();
+    } else if (dealerScore > 21) {
+      gStatus.textContent = "You won... New game???"
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      wins += 1;
+      scoreFunctions.calcStatistics();
+    } else if (dealerScore == playerScore) {
+      gStatus.textContent = "It's draw... New game???"
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      draws += 1;
+      scoreFunctions.calcStatistics();
+    }
+  }
 }
 
-function stand() {
-  dealerScore = 0;
-  dealerCards = dealerCards.concat(deck.splice(0, 1));
-  cards.dCardsURL();
-  deleteItems.deleteInvertedCard();
-  deleteItems.deleteDealerCards();
-  table.dTable();
-  scoreStatus.calculateDealerScore();
-  gameStand = true;
+function buttonsRefresh() {
+  hitBtn.disabled = false;
+  standBtn.disabled = false;
+  gStatus.textContent = "Hit or Stand"
 }
-
-
-
-// Доделать stand, 
-//          набор карт пока у дилера не будет больше очков чем игрока
-//          правила игры
-//          может быть и локальное хранилище для статистики

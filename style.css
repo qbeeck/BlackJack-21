@@ -10,6 +10,7 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   font-size: 35px;
+  background: linear-gradient(90deg, rgba(232,129,108,1) 11%, rgba(218,143,67,1) 68%);
 }
 
 /***** Header *****/
@@ -18,6 +19,7 @@ header {
   justify-content: space-around;
   align-items: center;
   margin-top: 100px;
+  background-color: green;
 }
 .playerBar { 
   width: 30%;
@@ -46,6 +48,7 @@ main {
   justify-content: space-around;
   align-items: center;
   align-content: center;
+  background-color: green;
 }
 .playerHand {
   width: 50%;
@@ -63,9 +66,15 @@ main {
   align-items: center;
   border: 1px solid black; 
 }
+img {
+  border: 3px solid white;
+  margin-left: 3px;
+  border-radius: 10px;
+}
 /***** /Main *****/
 /***** Footer *****/
 footer {
+  background-color: green;
   margin: 0 auto;
   width: 700px;
   height: 200px;
